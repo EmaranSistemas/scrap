@@ -205,7 +205,7 @@ class scrap:
 
         zip = self.driver.find_element(by=By.XPATH,value= '//*[@id="SupermercadosBBRecommercemain-1228722670-overlays"]/div[3]/div/div/div[3]/div/div/div/div/div/div/div/div/div/div/div[2]')
         zip.click()
-        print("[ >> 9. Descarga .zip << ]")
+        print("[ >> 9. Descarga .zip.. << ]")
         time.sleep(2)
 
     def informeCv(self):
