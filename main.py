@@ -7,7 +7,6 @@ from selenium.webdriver.common.by import By
 import zipfile
 import os
 import pandas as pd
-import mysql.connector
 import xlrd
 #sistemas@emaransac.com
 #Sm~18jn57
@@ -44,21 +43,12 @@ class scrap:
         #self.driver = webdriver.Chrome()
         self.action = ActionChains(self.driver)
 
-        self.cnx = mysql.connector.connect(
-            host="209.45.83.59",
-            user="sistemas",
-            password="qbJITBTz29o8Svf",
-            database="supermercados_sa"
-        )
-        self.cursor_ = self.cnx.cursor()
-
     def insertar(Ci, Np, Cb, St, Ps, Ub):
         sql = "INSERT INTO `plazavea`(`codigo_interno`, `nom_producto`, `codigo_barras`, `stock`, `presentacion`, `ubicacion`)" \
               " VALUES (%s,%s,%s,%s,%s,%s)"
         val = (Ci, Np, Cb, St, Ps, Ub)
 
-        self.cursor_.execute(sql, val)
-        self.cnx.commit()
+
         #self.cursor.execute(sql, val)
         #self.cnx.commit()
 
@@ -304,18 +294,19 @@ class scrap:
         self.file_df()
         time.sleep(5)
 
-        self.login()
+
         print("Iniciando informe cv")
         self.informeCv()
         self.file_df()
         print("--FIN--")
 
 
-db = scrap()
-#db.log()
-db.init()
-db.driver.quit()
+if __name__ == '__main__':
+    sc = scrap()
+    sc.init()
+    sc.driver.quit()
 
+"""
 sales
 invoice_type_id
     tipo 3 --> note_cretito
@@ -326,4 +317,5 @@ invoice_type_id
 sales2
 
 sales2_details
-
+"""
+#db.log()
