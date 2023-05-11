@@ -17,4 +17,5 @@ source myenv/bin/activate
 pip install pandas
 pip install selenium
 pip install xlrd
+pip install mysql-connector
 ~~~
