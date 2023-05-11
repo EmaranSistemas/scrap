@@ -30,7 +30,15 @@ class scrap:
         self.file_name = ""
 
         chromeOptions = Options()
-        chromeOptions.headless = False
+        chromeOptions.add_experimental_option("prefs", {
+            "download.default_directory": "D:\\Usuario\\Downloads\\",
+            "download.prompt_for_download": False,
+            "download.directory_upgrade": True,
+            "safebrowsing.enabled": True
+        })
+        chromeOptions.add_argument("--headless")
+        #chromeOptions.headless = True
+        #add_argument('--headless') or add_argument('--headless=new')
 
         #self.op = webdriver.ChromeOptions()
         #self.op.headless = True
@@ -47,30 +55,41 @@ class scrap:
         #self.servicio = Service(self.s)
         #self.driver = webdriver.Chrome()
         self.action = ActionChains(self.driver)
+    def reset_file_name(self):
+        self.file_name = ""
 
     def getFileName(self):
+        print("{ >> Get file name << }")
         for archivo in os.listdir(self.ruta_descarga):
             if archivo.endswith(".zip"):
                 self.file_name = os.path.splitext(archivo)[0]
                 print("filename get: ",self.file_name)
-                return archivo
+                return self.file_name
 
 
     def unsip(self):
-        with zipfile.ZipFile(self.ruta_descarga+self.getFileName(), 'r') as zip_ref:
+        print("{ >> Unzip file << }")
+        #print("este error: ",self.ruta_descarga+self.getFileName())
+        print("Ruta descarga: ",self.ruta_descarga)
+        print("Ruta nombre: ", self.getFileName())
+        ruta = self.ruta_descarga + self.getFileName()+'.zip'
+        with zipfile.ZipFile(str(ruta), 'r') as zip_ref:
             zip_ref.extractall(self.ruta_descarga)
         print("file unzip success!!!")
 
     def removFile(self):
+        print("{ >> Remove file << }")
         os.remove(os.path.splitext(self.ruta_descarga+self.getFileName())[0]+'.zip')
         os.remove(self.ruta_descarga+self.file_name+'.xls')
-
         print("file removed")
-    def file_df(self):
+
+    def file_df_remove(self):
+        print("{ >>  file && Remove<< }")
         self.unsip()
-        ruta = os.path.splitext(self.ruta_descarga+self.getFileName())[0]
+        ruta = self.ruta_descarga+self.getFileName()
+        #ruta = ruta[:-4]
         file = ruta+'.xls'
-        print("fil >>: ",file)
+        #print("fil >>: ",file)
         df = pd.read_excel(file)
         #++++++++++++++++++++++++******
         #  INSERTAR A LA BASE DE DATOS
@@ -113,23 +132,22 @@ class scrap:
 
 
     def abastecimiento(self):
-        time.sleep(1)
+        time.sleep(3)
         triangle = self.driver.find_element(By.XPATH, value='//*[@id="SupermercadosBBRecommercemain-1228722670"]/div/div[2]/div/div/div/div/div/div/div[2]/div/div/div[1]/div/div/div[3]/div/span[3]')
         self.action.click(triangle).perform()
-        time.sleep(4)
+        time.sleep(1)
         print("[ >> 1. Init << ]")
 
         abast = self.driver.find_element(By.XPATH, value='//*[@id="SupermercadosBBRecommercemain-1228722670-overlays"]/div[2]/div/div/span[1]/span[2]')
         self.action.click(abast).perform()
-        time.sleep(7)
-        print("[ >> 2. Abastecimiento << ]")
+        print("[ >> 2. Abastecimiento.. << ]")
+        time.sleep(15)
 
-        local = self.driver.find_element(By.XPATH,value='//*[@id="SupermercadosBBRecommercemain-1228722670-overlays"]/div[3]/div/div/span[1]/span')
-                                                       #'//*[@id="SupermercadosBBRecommercemain-1228722670-overlays"]/div[3]/div/div/span[2]/span'
-        self.action.move_to_element(local)
-        self.action.click(local).perform()
-        time.sleep(6)
-        print("[ >> 3. Indicadores Inv Local << ]")
+        detalle = self.driver.find_element(By.XPATH,value='//*[@id="SupermercadosBBRecommercemain-1228722670-overlays"]/div[3]/div/div/span[1]/span')
+        self.action.move_to_element(detalle)
+        self.action.click(detalle).perform()
+        time.sleep(3)
+        print("[ >> 3. Detalle Inv << ]")
 
         generar = self.driver.find_element(by=By.CLASS_NAME,value='v-button.v-widget.btn-filter-search.v-button-btn-filter-search')
         generar.click()
@@ -138,7 +156,7 @@ class scrap:
 
         descargar = self.driver.find_element(by=By.XPATH,value='//*[@id="SupermercadosBBRecommercemain-1228722670"]/div/div[2]/div/div/div/div/div/div/div[2]/div/div/div[3]/div/div/div/div/div[2]/div/div/div/div/div/div/div[2]/div/div[1]/div/div/div/div/div[1]/div')
         descargar.click()
-        time.sleep(6)
+        time.sleep(8)
         print("[ >> 5. Descargar <<]")
 
         exel = self.driver.find_element(by=By.XPATH,value='//*[@id="SupermercadosBBRecommercemain-1228722670-overlays"]/div[3]/div/div/div[3]/div/div/div/div/div/div/div/div[2]/div/div/div/div/span[2]/label')
@@ -154,7 +172,7 @@ class scrap:
         zip = self.driver.find_element(by=By.XPATH,value='//*[@id="SupermercadosBBRecommercemain-1228722670-overlays"]/div[3]/div/div/div[3]/div/div/div/div/div/div/div/div/div/div/div[2]/div/div/div/a/span')
         zip.click()
         print("[ >> 8. Descarga .zip << ]")
-        time.sleep(2)
+        time.sleep(12)
 
     def detalleinv(self):
         triangle = self.driver.find_element(By.XPATH, value='//*[@id="SupermercadosBBRecommercemain-1228722670"]/div/div[2]/div/div/div/div/div/div/div[2]/div/div/div[1]/div/div/div[3]/div/span[3]')
@@ -164,13 +182,13 @@ class scrap:
 
         abast = self.driver.find_element(By.XPATH, value='//*[@id="SupermercadosBBRecommercemain-1228722670-overlays"]/div[2]/div/div/span[1]/span[2]')
         self.action.click(abast).perform()
-        time.sleep(766)
+        time.sleep(7)
         print("[ >> 2. Abastecimiento.. << ]")
 
         local = self.driver.find_element(By.XPATH,value='//*[@id="SupermercadosBBRecommercemain-1228722670-overlays"]/div[3]/div/div/span[2]/span')
         self.action.move_to_element(local)
         self.action.click(local).perform()
-        time.sleep(2)
+        time.sleep(3)
         print("[ >> 3. Detalle Inv << ]")
 
         generar = self.driver.find_element(by=By.CLASS_NAME,value='v-button.v-widget.btn-filter-search.v-button-btn-filter-search')
@@ -203,6 +221,8 @@ class scrap:
         print("[ >> 8. Seleccionar << ]")
 
 
+                                                         #'//*[@id="SupermercadosBBRecommercemain-1228722670-overlays"]/div[3]/div/div/div[3]/div/div/div/div/div/div/div/div/div/div/div[2]'
+        #'v-slot v-align-center v-align-middle'
         zip = self.driver.find_element(by=By.XPATH,value= '//*[@id="SupermercadosBBRecommercemain-1228722670-overlays"]/div[3]/div/div/div[3]/div/div/div/div/div/div/div/div/div/div/div[2]')
         zip.click()
         print("[ >> 9. Descarga .zip.. << ]")
@@ -215,9 +235,9 @@ class scrap:
         time.sleep(4)
         print("[ >> 1. Init << ]")
 
-        abast = self.driver.find_element(By.XPATH, value='//*[@id="SupermercadosBBRecommercemain-1228722670"]/div/div[2]/div/div/div/div/div/div/div[2]/div/div/div[1]/div/div/div[3]/div/span[3]/span[2]')
+        abast = self.driver.find_element(By.XPATH, value='//*[@id="SupermercadosBBRecommercemain-1228722670-overlays"]/div[2]/div/div/span[1]/span[2]')
         self.action.click(abast).perform()
-        time.sleep(2)
+        time.sleep(6)
         print("[ >> 2. Abastecimiento << ]")
 
 
@@ -255,7 +275,7 @@ class scrap:
 
         Seleccionar = self.driver.find_element(by=By.XPATH,value= '//*[@id="SupermercadosBBRecommercemain-1228722670-overlays"]/div[3]/div/div/div[3]/div/div/div/div/div/div/div/div[3]/div/div/div[1]/div')
         Seleccionar.click()
-        time.sleep(6)
+        time.sleep(12)
         print("[ >> 8. Seleccionar << ]")
 
 
@@ -264,32 +284,34 @@ class scrap:
         print("[ >> 9. Descarga .zip << ]")
 
         time.sleep(3)
-    def upload(self):
-        sc.unsip()
-        sc.file_df()
 
     def init(self):
         self.login()
 
-        #print("[ >> 1.Abastecimiento << ]")
-        #self.abastecimiento()
-        #self.file_df()
-        #time.sleep(5)
+        print("[ >> 1.Abastecimiento << ]")
+        self.abastecimiento()
+        self.file_df_remove()
+        time.sleep(5)
+        self.reset_file_name()
+
 
         print("[ >> 2.Detalle Inv << ]")
         self.detalleinv()
-        self.file_df()
+        self.file_df_remove()
         time.sleep(5)
+        self.reset_file_name()
 
 
-        #print("[ >> 3. Informe cobertura << ]")
-        #self.informeCv()
-        #self.file_df()
-        #print("[ >> fin << ]")
+        print("[ >> 3. Informe cobertura << ]")
+        self.informeCv()
+        self.file_df_remove()
+        self.reset_file_name()
+        print("[ >> fin << ]")
 
 
 if __name__ == '__main__':
     sc = scrap()
+    #sc.file_df_remove()
     sc.init()
     sc.driver.quit()
 
