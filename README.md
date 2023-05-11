@@ -1,5 +1,5 @@
 # scrap
-scrap simple 
+scrap simple db
 
 ~~~
 sudo apt install python3-venv
