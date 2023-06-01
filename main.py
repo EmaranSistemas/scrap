@@ -143,7 +143,7 @@ class scrap:
     def removFile(self):
         print("{ >> Remove file << }")
         os.remove(os.path.splitext(self.ruta_descarga+self.getFileName())[0]+'.zip')
-        os.remove(self.ruta_descarga+self.file_name+'.xls')
+        #os.remove(self.ruta_descarga+self.file_name+'.xls')
         print("file removed")
 
     def print_name(self):
@@ -290,7 +290,7 @@ class scrap:
 
 
             self.eliminar_archivos_carpeta(self.ruta_descarga_rm)
-            self.move_file(file,self.getFileName())
+            self.move_file(file,self.ruta_descarga_rm)
 
 
 
@@ -512,7 +512,7 @@ class scrap:
         time.sleep(3)
 
     def init(self):
-        """
+
         self.login()
 
         print("[ >> 1.Abastecimiento << ]")
@@ -520,11 +520,8 @@ class scrap:
         self.file_df_remove()
         time.sleep(5)
         self.reset_file_name()
-        """
-        self.eliminar_archivos_carpeta(self.ruta_descarga_rm)
-        ruta = "D:\\ScrapFiles\\" + self.getFileName()
-        file = ruta+'.xls'
-        self.move_file(file, self.ruta_descarga_rm)
+
+
 
 
 
